@@ -23,7 +23,7 @@ let selected = colors["color-4"];
 let pixelStorage = [];
 let balance = 100;
 
-const ws = new WebSocket('wss://pixelhour-art-client.herokuapp.com');
+const ws = new WebSocket('wss://pixelhour-art-server.herokuapp.com');
 // const ws = new WebSocket('ws://localhost:8080');
 
 ws.onopen = function () {
