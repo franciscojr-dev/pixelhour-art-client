@@ -20,11 +20,10 @@ const colors = {
     "color-16": "rgb(130, 0, 128)",
 };
 let selected = colors["color-4"];
-let pixelStorage = [];
-let balance = 100;
+let balance = 0;
 
 const ws = new WebSocket('wss://pixelhour-art-server.herokuapp.com');
-// const ws = new WebSocket('ws://localhost:8080');
+//const ws = new WebSocket('ws://localhost:8080');
 
 ws.onopen = function () {
     console.log('Connected!');
@@ -32,23 +31,23 @@ ws.onopen = function () {
 
 ws.onmessage = function (msg) {
     let content = JSON.parse(msg.data);
-};
 
-window.onload = () => {
-    for (pixel of pixelStorage) {
-        drawData(pixel);
+    if (content.type === 'load') {
+        balance = content.balance;
+        balanceQty.innerText = balance;
+
+        for (pixel of content.data) {
+            drawData(pixel, true);
+        }
     }
 
-    balanceQty.innerText = balance;
-};
+    if (content.type === 'register') {
+        drawData(content.data, true);
 
-function subBalance() {
-    if (balance) {
-        balance -= 1;
+        balance = content.balance;
+        balanceQty.innerText = balance;
     }
-
-    balanceQty.innerText = balance;
-}
+};
 
 function draw(event) {
     if (balance) {
@@ -59,18 +58,22 @@ function draw(event) {
         };
 
         drawData(data);
-        pixelStorage.push(data);
+
+        ws.send(
+            JSON.stringify({
+                type: "register",
+                data
+            })
+        );
     } else {
         console.log("Without balance!");
     }
 }
 
-function drawData(data) {
-    if (balance) {
+function drawData(data, renderAll = false) {
+    if (balance || renderAll) {
         ctx.fillStyle = data.color;
         ctx.fillRect(data.x, data.y, 1, 1);
-
-        subBalance();
     }
 }
 
@@ -95,5 +98,4 @@ function localization(event) {
     }
 }
 
-// canvas.addEventListener("mousemove", (event) => console.log(localization(event)));
 canvas.addEventListener("click", (event) => draw(event));
