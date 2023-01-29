@@ -1,4 +1,5 @@
 const balanceQty = document.querySelector("#balance-qty");
+const totalOn = document.querySelector("#total-on");
 const canvas = document.querySelector("#pixelWindow");
 const ctx = canvas.getContext("2d");
 const colors = {
@@ -31,6 +32,10 @@ ws.onopen = function () {
 
 ws.onmessage = function (msg) {
     let content = JSON.parse(msg.data);
+
+    if (content?.total_active) {
+        totalOn.innerText = content.total_active;
+    }
 
     if (content.type === 'load') {
         balance = content.balance;
