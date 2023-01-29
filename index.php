@@ -1,1 +1,3 @@
-<?= require_once('./app.html'); ?>
+<?php
+    require_once('./app.html');
+?>
