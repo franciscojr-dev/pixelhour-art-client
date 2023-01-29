@@ -1,30 +1,54 @@
-<html>
-    <head>
-    <script type="text/javascript">
-        const ws = new WebSocket('wss://pixelhour-art-server.herokuapp.com');
-        // const ws = new WebSocket('ws://localhost:8080');
-      
-        ws.onopen = function () {
-            document.querySelector('#send').disabled = false;
-            document.querySelector('#send').addEventListener('click', function() {
-                ws.send(document.querySelector('#message').value);
-            });
-        };
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="million, one million, dollar, pixels, pixel, banner, ad">
+    <meta name="description" content="Just a simple pixel website. One pixel per hour.">
+    <title>Pixel per hour</title>
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-11">
+                <canvas id="pixelWindow" width="970" height="970"></canvas>
+            </div>
+            
+            <div class="col-lg-1">
+                <div id="colors">
+                    <button class="btn-color color-1" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-2" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-3" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-4" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-5" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-6" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-7" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-8" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-9" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-10" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-11" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-12" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-13" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-14" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-15" onclick="selectColor(this)"></button>
+                    <button class="btn-color color-16" onclick="selectColor(this)"></button>
+                </div>
+        
+                <div id="balance">
+                    <p><b>1 hour = 1 pixel</b></p>
+                    <p>Balance: <span id="balance-qty">0</span> pixel</p>
 
-        ws.onmessage = function (msg) {
-            console.log(JSON.parse(msg.data));
-            document.querySelector('#message').value = '';
-            document.querySelector('#messages').innerHTML += `<div>${msg.data}</div>`;
-        };
-    </script>
-  </head>
-    <body>
-        <h1>Chat</h1>
+                    <div id="color-selected">
+                        <button class="btn-color color-4"></button>
+                    </div>
+                </div>
+            </div>
+          </div>
+    </div>
 
-        <div>
-            <textarea id="message" placeholder="Message"></textarea>
-            <button id="send" disabled="true">Send</button>
-        </div>
-        <div id="messages"></div>
-    </body>
+    <script src="./js/pixel.js"></script>
+</body>
 </html>
