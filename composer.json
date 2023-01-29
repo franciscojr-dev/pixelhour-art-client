@@ -1,0 +1,14 @@
+{
+    "name": "develop/pixelhour-art-client",
+    "autoload": {
+        "psr-4": {
+            "Develop\\PixelhourArtClient\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Francisco Jr"
+        }
+    ],
+    "require": {}
+}
