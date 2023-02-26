@@ -22,44 +22,70 @@ const colors = {
 };
 let selected = colors["color-4"];
 let balance = 0;
+let ws = null;
 
-const ws = new WebSocket('wss://pixelhour-art-server.herokuapp.com');
-//const ws = new WebSocket('ws://localhost:8080');
+function connect() {
+    ws = new WebSocket('wss://pixelhour-art-server.herokuapp.com');
+    //ws = new WebSocket('ws://localhost:8080');
+    
+    ws.onopen = function () {
+        console.log('Connected!');
+    
+        ws.send(
+            JSON.stringify({
+                type: "getBalance",
+                data: {
+                    id: clientId
+                }
+            })
+        );
+    };
+    
+    ws.onclose = function(e) {
+        console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+        setTimeout(function() {
+          connect();
+        }, 1000);
+    };
+    
+    ws.onerror = function(err) {
+        console.error('Socket encountered error: ', err.message, 'Closing socket!');
+        ws.close();
+    };
 
-ws.onopen = function () {
-    console.log('Connected!');
-};
-
-ws.onmessage = function (msg) {
-    let content = JSON.parse(msg.data);
-
-    if (content?.total_active) {
-        totalOn.innerText = content.total_active;
-    }
-
-    if (content.type === 'load') {
-        balance = content.balance;
-        balanceQty.innerText = balance;
-
-        for (pixel of content.data) {
-            drawData(pixel, true);
+    ws.onmessage = function (msg) {
+        let content = JSON.parse(msg.data);
+    
+        if (content?.total_active) {
+            totalOn.innerText = content.total_active;
         }
-    }
-
-    if (content.type === 'register') {
-        drawData(content.data, true);
-
-        balance = content.balance;
-        balanceQty.innerText = balance;
-    }
-};
+    
+        if (content.type === 'load') {
+            balance = content.balance;
+            balanceQty.innerText = balance;
+    
+            for (pixel of content.data) {
+                drawData(pixel, true);
+            }
+        }
+    
+        if (content.type === 'register') {
+            drawData(content.data, true);
+    
+            balance = content.balance;
+            balanceQty.innerText = balance;
+        }
+    };
+}
+connect();
 
 function draw(event) {
     if (balance) {
         const pos = localization(event);
         let data = {
+            id: clientId,
             ...pos,
-            color: selected || colors["color-4"]
+            color: selected || colors["color-4"],
         };
 
         drawData(data);
